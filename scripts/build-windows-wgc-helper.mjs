@@ -125,3 +125,14 @@ if (!fs.existsSync(frameVisibilityTestPath)) {
 // reads every black frame as content.
 await run(frameVisibilityTestPath, [], { cwd: BUILD_DIR });
 console.log(`Passed ${frameVisibilityTestPath}`);
+
+const encoderColorTestPath = path.join(BUILD_DIR, "mf_encoder_color_test.exe");
+if (!fs.existsSync(encoderColorTestPath)) {
+	throw new Error(`WGC helper build completed but ${encoderColorTestPath} was not found.`);
+}
+// Guards what the H.264 track is and says: High profile, BT.709 studio range
+// in the samples and in the tags, which is what the compositor decodes. Media
+// Foundation's own colour converter wrote BT.601. Skips its file checks when
+// ffprobe/ffmpeg are not on PATH.
+await run(encoderColorTestPath, [], { cwd: BUILD_DIR });
+console.log(`Passed ${encoderColorTestPath}`);
